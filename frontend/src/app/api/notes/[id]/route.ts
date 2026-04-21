@@ -1,35 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { dbConnect } from "@/lib/mongodb";
+import { NotePayload, validateAndNormalizeNoteInput } from "@/lib/note-validation";
 import Note from "@/models/Note";
-
-type NotePayload = {
-  title?: string;
-  content?: string;
-};
-
-function validatePayload(payload: NotePayload) {
-  const title = payload.title?.trim() || "";
-  const content = payload.content?.trim() || "";
-
-  if (!title) {
-    return "Title is required";
-  }
-
-  if (title.length > 120) {
-    return "Title must be at most 120 characters";
-  }
-
-  if (!content) {
-    return "Content is required";
-  }
-
-  if (content.length > 2000) {
-    return "Content must be at most 2000 characters";
-  }
-
-  return null;
-}
 
 function invalidIdResponse() {
   return NextResponse.json(
@@ -76,11 +49,11 @@ export async function PUT(
 
   try {
     const payload = (await req.json()) as NotePayload;
-    const validationError = validatePayload(payload);
+    const { error, title, content } = validateAndNormalizeNoteInput(payload);
 
-    if (validationError) {
+    if (error) {
       return NextResponse.json(
-        { success: false, error: validationError },
+        { success: false, error },
         { status: 400 }
       );
     }
@@ -89,8 +62,8 @@ export async function PUT(
     const note = await Note.findByIdAndUpdate(
       params.id,
       {
-        title: payload.title?.trim(),
-        content: payload.content?.trim(),
+        title,
+        content,
       },
       { new: true }
     );

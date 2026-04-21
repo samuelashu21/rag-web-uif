@@ -1,6 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import {
+  NOTE_CONTENT_MAX_LENGTH,
+  NOTE_TITLE_MAX_LENGTH,
+  validateAndNormalizeNoteInput,
+} from "@/lib/note-validation";
 
 type Note = {
   _id: string;
@@ -59,22 +64,7 @@ export default function CrudNotesPage() {
   }
 
   function validateForm() {
-    const title = form.title.trim();
-    const content = form.content.trim();
-
-    if (!title) {
-      return "Title is required";
-    }
-    if (title.length > 120) {
-      return "Title must be at most 120 characters";
-    }
-    if (!content) {
-      return "Content is required";
-    }
-    if (content.length > 2000) {
-      return "Content must be at most 2000 characters";
-    }
-    return null;
+    return validateAndNormalizeNoteInput(form).error;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -181,7 +171,7 @@ export default function CrudNotesPage() {
               value={form.title}
               onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
               className="w-full rounded-lg border px-3 py-2 text-sm outline-none ring-blue-200 focus:ring"
-              maxLength={120}
+              maxLength={NOTE_TITLE_MAX_LENGTH}
               required
             />
           </div>
@@ -195,7 +185,7 @@ export default function CrudNotesPage() {
               value={form.content}
               onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
               className="min-h-32 w-full rounded-lg border px-3 py-2 text-sm outline-none ring-blue-200 focus:ring"
-              maxLength={2000}
+              maxLength={NOTE_CONTENT_MAX_LENGTH}
               required
             />
           </div>

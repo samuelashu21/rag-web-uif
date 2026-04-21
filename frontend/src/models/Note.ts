@@ -1,4 +1,8 @@
 import mongoose, { Model, Schema } from "mongoose";
+import {
+  NOTE_CONTENT_MAX_LENGTH,
+  NOTE_TITLE_MAX_LENGTH,
+} from "@/lib/note-validation";
 
 export interface INote {
   title: string;
@@ -14,14 +18,20 @@ const noteSchema = new Schema<INote>(
       required: [true, "Title is required"],
       trim: true,
       minlength: [1, "Title must not be empty"],
-      maxlength: [120, "Title must be at most 120 characters"],
+      maxlength: [
+        NOTE_TITLE_MAX_LENGTH,
+        `Title must be at most ${NOTE_TITLE_MAX_LENGTH} characters`,
+      ],
     },
     content: {
       type: String,
       required: [true, "Content is required"],
       trim: true,
       minlength: [1, "Content must not be empty"],
-      maxlength: [2000, "Content must be at most 2000 characters"],
+      maxlength: [
+        NOTE_CONTENT_MAX_LENGTH,
+        `Content must be at most ${NOTE_CONTENT_MAX_LENGTH} characters`,
+      ],
     },
   },
   { timestamps: true }
