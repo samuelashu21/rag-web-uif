@@ -20,6 +20,62 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## MongoDB CRUD demo (Notes)
+
+This frontend includes a simple Next.js + MongoDB CRUD example:
+
+- UI page: `http://localhost:3000/crud-notes`
+- API endpoints:
+  - `GET /api/notes`
+  - `POST /api/notes`
+  - `GET /api/notes/:id`
+  - `PUT /api/notes/:id`
+  - `DELETE /api/notes/:id`
+
+### 1) Configure MongoDB
+
+Copy env template:
+
+```bash
+cp .env.example .env.local
+```
+
+Set values in `.env.local`:
+
+```bash
+MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_DB=nextjs_crud_demo
+```
+
+Use either local MongoDB or MongoDB Atlas (replace `MONGODB_URI` with your Atlas URI).
+
+### 2) Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000/crud-notes`.
+
+### 3) Validation rules
+
+- `title`: required, max 120 chars
+- `content`: required, max 2000 chars
+
+Validation is enforced on both client and server API routes.
+
+### 4) Deploy (example: Vercel)
+
+Set the same `MONGODB_URI` and `MONGODB_DB` environment variables in your deployment provider, then redeploy and test the CRUD page in production.
+
+### 5) Optional next improvements
+
+- Add pagination and search
+- Add auth and per-user notes
+- Add loading skeletons and optimistic updates
+- Add automated API and UI tests
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
